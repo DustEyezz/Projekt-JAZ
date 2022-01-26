@@ -1,10 +1,13 @@
 package com.example.projekcik.controller;
 
+import com.example.projekcik.model.Movie;
 import com.example.projekcik.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Array;
@@ -20,16 +23,26 @@ public class MovieController {
 
 	@GetMapping()
 	public String getAllMovies(Model model){
-		model.addAttribute("something", movieRepository.findAll());
+		model.addAttribute("movies", movieRepository.findAll());
 		return "index";
-	}		
-/*
-	@PostMapping("/movies/add")
-	public ResponseEntity<Movie> createMovie(@RequestBody Movie newMovie) {
-		Movie movie = movieRepository.save(newMovie);
-		return ResponseEntity.ok(movie);
 	}
 
+	@GetMapping("/add")
+	public String showAddForm(Model model){
+		model.addAttribute("movie", new Movie());
+		return "addForm";
+	}
+
+	@PostMapping("/add")
+	public String submitForm(@ModelAttribute Movie newMovie, Model model) {
+		movieRepository.save(newMovie);
+
+		model.addAttribute("movie", new Movie());
+
+		return "addForm";
+	}
+
+/*
 	@GetMapping("/movies/id/{id}")
 	public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
 		Movie movie = movieRepository.findById(id)
